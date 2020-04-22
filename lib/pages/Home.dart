@@ -271,21 +271,26 @@ class _HomeState extends State<Home> {
 
     if (!doc.exists) {
       // 2) if the user doesn't exist, then we want to take them to the create account page
-      final username = await Navigator.push(
+      var username = await Navigator.push(
           context, MaterialPageRoute(builder: (context) => CreateAccount()));
 
 
       // 3) get username from create account, use it to make new user document in users collection
-        usersRef.document(user.id).setData({
-        'id': user.id,
-        'username': username,
-        'isVerified' : false ,
-        'photoUrl': user.photoUrl,
-        'email': user.email,
-        'displayName': user.displayName,
-        'bio': '',
-        'timestamp': timestamp
-      });
+        if(username != null){
+          usersRef.document(user.id).setData({
+            'id': user.id,
+            'username': username,
+            'isVerified' : false ,
+            'photoUrl': user.photoUrl,
+            'email': user.email,
+            'displayName': user.displayName,
+            'bio': '',
+            'timestamp': timestamp
+          });
+        } else if(username == null){
+          username = await Navigator.push(
+              context, MaterialPageRoute(builder: (context) => CreateAccount()));
+        }
 
       await followersRef
           .document(user.id)

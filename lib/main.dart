@@ -8,8 +8,6 @@ void main() => runApp(MaterialApp(
       primaryColor: Colors.black,
       accentColor: Colors.teal.shade600,
   ),
-
-
 ));
 
 
