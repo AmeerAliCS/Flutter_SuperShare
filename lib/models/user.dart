@@ -19,7 +19,7 @@ class User {
       email: doc['email'] ,
       photoUrl: doc['photoUrl'] ,
       displayName: doc['displayName'] ,
-      bio: doc['bio']
+      bio: doc['bio'],
     );
   }
 }

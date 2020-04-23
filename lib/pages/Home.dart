@@ -271,39 +271,38 @@ class _HomeState extends State<Home> {
 
     if (!doc.exists) {
       // 2) if the user doesn't exist, then we want to take them to the create account page
-      var username = await Navigator.push(
+      final username = await Navigator.push(
           context, MaterialPageRoute(builder: (context) => CreateAccount()));
 
-
       // 3) get username from create account, use it to make new user document in users collection
-        if(username != null){
-          usersRef.document(user.id).setData({
-            'id': user.id,
-            'username': username,
-            'isVerified' : false ,
-            'photoUrl': user.photoUrl,
-            'email': user.email,
-            'displayName': user.displayName,
-            'bio': '',
-            'timestamp': timestamp
-          });
-        } else if(username == null){
-          username = await Navigator.push(
-              context, MaterialPageRoute(builder: (context) => CreateAccount()));
-        }
-
+      if(username != null){
+        usersRef.document(user.id).setData({
+          'id': user.id,
+          'username': username,
+          'isVerified' : false ,
+          'photoUrl': user.photoUrl,
+          'email': user.email,
+          'displayName': user.displayName,
+          'bio': '',
+          'timestamp': timestamp
+        });
+      }
+      // make new user their own follower (to include their posts in their timeline)
       await followersRef
           .document(user.id)
           .collection('userFollowers')
           .document(user.id)
           .setData({});
 
-        doc = await usersRef.document(user.id).get();
+      doc = await usersRef.document(user.id).get();
     }
+
     currentUser = User.fromDocument(doc);
+  }
+
 //    print(currentUser);
 //    print('Name: ${currentUser.displayName}');
-  }
+
 
   @override
   Widget build(BuildContext context) {

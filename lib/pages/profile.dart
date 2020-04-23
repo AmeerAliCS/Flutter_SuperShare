@@ -249,7 +249,7 @@ class _ProfileState extends State<Profile> {
     });
   }
 
-  buildProfileHeader() {
+  buildProfileHeader()  {
     return FutureBuilder(
       future: usersRef.document(widget.profileId).get(),
       builder: (context , snapshot){
@@ -277,21 +277,21 @@ class _ProfileState extends State<Profile> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Container(
-                    child: Text('@${user.username}' , style: TextStyle(fontSize: 16 , fontWeight: FontWeight.bold),),
+                    child: Text('@${user.username != null ? user.username : user.id}' , style: TextStyle(fontSize: 16 , fontWeight: FontWeight.bold),),
                   ),
 
                   Padding(
                     padding: EdgeInsets.only(left: 2.0),
                   ),
-                  Container(
-                    child: user.isVerified
-                        ? Icon(
-                            Icons.verified_user,
-                            color: Colors.blue,
-                            size: 18.0,
-                          )
-                        : Text(''),
-                  )
+//                  Container(
+//                    child: user.isVerified
+//                        ? Icon(
+//                            Icons.verified_user,
+//                            color: Colors.blue,
+//                            size: 18.0,
+//                          )
+//                        : Text(''),
+//                  )
                 ],
               ),
 
@@ -351,6 +351,10 @@ class _ProfileState extends State<Profile> {
       },
     );
   }
+
+
+
+
 
 //  buildProfileHeader() {
 //    return FutureBuilder(
