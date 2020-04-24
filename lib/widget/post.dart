@@ -14,7 +14,7 @@ import 'custom_image.dart';
 class Post extends StatefulWidget {
   final String postId;
   final String ownerId;
-  final String username;
+  final String displayName;
   final String location;
   final String description;
   final String mediaUrl;
@@ -23,7 +23,7 @@ class Post extends StatefulWidget {
   Post({
     this.postId,
     this.ownerId,
-    this.username,
+    this.displayName,
     this.location,
     this.description,
     this.mediaUrl,
@@ -34,7 +34,7 @@ class Post extends StatefulWidget {
     return Post(
       postId: doc['postId'],
       ownerId: doc['ownerId'],
-      username: doc['username'],
+      displayName: doc['displayName'],
       location: doc['location'],
       description: doc['description'],
       mediaUrl: doc['mediaUrl'],
@@ -61,7 +61,7 @@ class Post extends StatefulWidget {
   _PostState createState() => _PostState(
     postId: this.postId,
     ownerId: this.ownerId,
-    username: this.username,
+    displayName: this.displayName,
     location: this.location,
     description: this.description,
     mediaUrl: this.mediaUrl,
@@ -74,20 +74,21 @@ class _PostState extends State<Post> {
   final String currentUserId = currentUser?.id;
   final String postId;
   final String ownerId;
-  final String username;
+  final String displayName;
   final String location;
   final String description;
   final String mediaUrl;
   int likeCount;
   Map likes;
   bool isLiked;
+  bool isBan = currentUser.isBan;
   bool showHeart = false;
   final DateTime timestamp = DateTime.now();
 
   _PostState({
     this.postId,
     this.ownerId,
-    this.username,
+    this.displayName,
     this.location,
     this.description,
     this.mediaUrl,
@@ -136,7 +137,7 @@ class _PostState extends State<Post> {
     if(isNotPostOwner){
       activityFeedRef.document(ownerId).collection('feedItems').document(postId).setData({
         'type' : 'like' ,
-        'username' : currentUser.username ,
+        'displayName' : currentUser.displayName ,
         'userId' : currentUser.id ,
         'userProfileImg' : currentUser.photoUrl ,
         'postId' : postId ,
@@ -230,7 +231,7 @@ class _PostState extends State<Post> {
           title: GestureDetector(
             onTap: () => showProfile(context , profileId: user.id),
             child: Text(
-              user.username,
+              user.displayName,
               style: TextStyle(
                 color: Theme.of(context).primaryColor,
                 fontWeight: FontWeight.bold,
@@ -292,7 +293,8 @@ class _PostState extends State<Post> {
             ),
             Padding(padding: EdgeInsets.only(right: 20.0)),
             GestureDetector(
-              onTap: () => showComments(
+              onTap: () =>
+              showComments(
                 context,
                 postId: postId,
                 ownerId: ownerId,
@@ -326,7 +328,7 @@ class _PostState extends State<Post> {
             Container(
               margin: EdgeInsets.only(left: 20.0),
               child: Text(
-                "$username ",
+                "$displayName ",
                 style: TextStyle(
                   color: Theme.of(context).primaryColor,
                   fontWeight: FontWeight.bold,
@@ -336,18 +338,49 @@ class _PostState extends State<Post> {
             Expanded(child: Text(description))
           ],
         ),
+
       ],
     );
   }
 
+
   showComments(BuildContext context, {String postId, String ownerId, String mediaUrl}) {
+    isBan != true ?
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return Comments(
         postId: postId,
         ownerId: ownerId,
         mediaUrl: mediaUrl,
       );
-    }));
+    }))
+        :
+
+    showDialog(
+        context: context,
+        builder: (context){
+        return SimpleDialog(
+          title: Text('You are banned'),
+          children: <Widget>[
+            SimpleDialogOption(
+              child: Text('You cannot comment because you are banned by the owner'),
+            ),
+            SimpleDialogOption(
+              child: Text("Cancel"),
+              onPressed: () => Navigator.pop(context),
+            )
+          ],
+        );
+        }
+    );
+}
+
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      isBan = currentUser.isBan;
+    });
   }
 
 

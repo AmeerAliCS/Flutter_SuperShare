@@ -52,8 +52,8 @@ String activityItemText;
 
 class ActivityFeedItem extends StatelessWidget {
 
-  final String username;
   final String userId;
+  final String displayName;
   final String type;
   final String mediaUrl;
   final String postId;
@@ -62,14 +62,14 @@ class ActivityFeedItem extends StatelessWidget {
   final Timestamp timestamp;
 
   ActivityFeedItem({
-    this.username , this.userId , this.type ,this.mediaUrl ,
+    this.displayName ,this.userId , this.type ,this.mediaUrl ,
     this.postId , this.userProfileImg , this.commentData , this.timestamp
   });
 
   factory ActivityFeedItem.fromDocument(DocumentSnapshot doc){
     return ActivityFeedItem(
-      username: doc['username'],
       userId: doc['userId'],
+      displayName: doc['displayName'],
       type: doc['type'],
       mediaUrl: doc['mediaUrl'],
       postId: doc['postId'],
@@ -140,7 +140,7 @@ class ActivityFeedItem extends StatelessWidget {
                   ),
                   children: [
                     TextSpan(
-                      text: username,
+                      text: displayName,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     TextSpan(

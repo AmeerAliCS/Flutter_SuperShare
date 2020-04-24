@@ -14,8 +14,8 @@ class Search extends StatefulWidget {
   @override
   _SearchState createState() => _SearchState();
 }
-
-class _SearchState extends State<Search> with AutomaticKeepAliveClientMixin<Search> {
+// with AutomaticKeepAliveClientMixin<Search>
+class _SearchState extends State<Search>  {
 
   Future<QuerySnapshot> searchResultFuture;
   TextEditingController searchController = TextEditingController();
@@ -91,7 +91,7 @@ class _SearchState extends State<Search> with AutomaticKeepAliveClientMixin<Sear
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+//    super.build(context);
     return Scaffold(
         backgroundColor: searchResultFuture == null ? Colors.white70 : Colors.white,
         appBar: buildSearchField(),
@@ -99,9 +99,9 @@ class _SearchState extends State<Search> with AutomaticKeepAliveClientMixin<Sear
     );
   }
 
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
+//  @override
+//  // TODO: implement wantKeepAlive
+//  bool get wantKeepAlive => true;
 }
 
 
@@ -125,7 +125,7 @@ class UserResult extends StatelessWidget{
                 backgroundImage: NetworkImage(user.photoUrl),
               ),
               title: Text(user.displayName , style: TextStyle(color: Theme.of(context).primaryColor , fontWeight: FontWeight.bold),),
-              subtitle: Text(user.username , style: TextStyle(color: Theme.of(context).primaryColor),),
+              subtitle: Text(user.bio , style: TextStyle(color: Theme.of(context).primaryColor),),
             ),
           ),
         //  Divider(height: 2.0, color: Colors.grey,)

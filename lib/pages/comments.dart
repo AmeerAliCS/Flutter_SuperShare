@@ -37,7 +37,7 @@ class _CommentsState extends State<Comments> {
 
   addComment(){
     commentsRef.document(postId).collection('comments').add({
-      'username' : currentUser.username ,
+      'displayName' : currentUser.displayName ,
       'comment' : commentController.text,
       'avatarUrl' : currentUser.photoUrl,
       'timestamp' : timestamp ,
@@ -51,7 +51,7 @@ class _CommentsState extends State<Comments> {
         "timestamp": timestamp,
         "postId": postId,
         "userId": currentUser.id,
-        "username": currentUser.username,
+        "displayName": currentUser.displayName,
         "userProfileImg": currentUser.photoUrl,
         "mediaUrl": mediaUrl,
       });
@@ -81,7 +81,7 @@ class _CommentsState extends State<Comments> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: header(context , titleText: 'Comments' , elevation: 1.0 , opacity: 0.90),
+      appBar: header(context , titleText: 'Comments' , elevation: 1.0 , opacity: 0.90 ,backButton: true),
       body: Column(
         children: <Widget>[
           Expanded(
@@ -109,17 +109,17 @@ class _CommentsState extends State<Comments> {
 
 class Comment extends StatelessWidget {
 
-  final String username;
+  final String displayName;
   final String comment;
   final String avatarUrl;
   final String userId;
   final Timestamp timestamp;
 
-  Comment({this.username , this.comment ,this.avatarUrl ,this.userId ,this.timestamp});
+  Comment({this.displayName , this.comment ,this.avatarUrl ,this.userId ,this.timestamp});
 
   factory Comment.fromDocument(DocumentSnapshot doc){
     return Comment(
-      username: doc['username'],
+      displayName: doc['displayName'],
       comment: doc['comment'],
       avatarUrl: doc['avatarUrl'],
       userId: doc['userId'],
@@ -136,7 +136,7 @@ class Comment extends StatelessWidget {
             text: TextSpan(
                 style: DefaultTextStyle.of(context).style,
                 children: <TextSpan>[
-                  TextSpan(text: '$username' , style: TextStyle(fontWeight: FontWeight.bold)),
+                  TextSpan(text: '$displayName' , style: TextStyle(fontWeight: FontWeight.bold)),
                   TextSpan(text: ' $comment')
                 ]
             ),

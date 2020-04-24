@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:fluttershare5/pages/Home.dart';
 import 'package:fluttershare5/widget/header.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CreateAccount extends StatefulWidget {
   @override
@@ -11,10 +13,11 @@ class _CreateAccountState extends State<CreateAccount> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   String username;
+  bool userExists = false;
 
   submit() {
     final form = _formKey.currentState;
-    if(form.validate()){
+     if(form.validate()){
       form.save();
       SnackBar snackBar = SnackBar(content: Text('Welcome $username !'),);
       _scaffoldKey.currentState.showSnackBar(snackBar);
@@ -23,6 +26,8 @@ class _CreateAccountState extends State<CreateAccount> {
       });
     }
   }
+
+
 
   @override
   Widget build(BuildContext parentContext) {

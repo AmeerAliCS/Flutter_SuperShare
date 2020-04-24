@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttershare5/models/user.dart';
@@ -21,12 +22,13 @@ class Upload extends StatefulWidget {
 }
 
 //AutomaticKeepAliveClientMixin<Upload>   حتى تبقى محتويات الصفحة من ننتقل لغيرها
-class _UploadState extends State<Upload> with AutomaticKeepAliveClientMixin<Upload> {
+class _UploadState extends State<Upload> { //with AutomaticKeepAliveClientMixin<Upload>
 
   TextEditingController captionController = TextEditingController();
   TextEditingController locationController = TextEditingController();
   File file;
   bool isUploading = false;
+  bool isBan;
   String postId = Uuid().v4();
   final DateTime timestamp = DateTime.now();
 
@@ -50,20 +52,22 @@ class _UploadState extends State<Upload> with AutomaticKeepAliveClientMixin<Uplo
     return showDialog(
       context: parentContext,
       builder: (context) {
-        return SimpleDialog(
-          title: Text("Create Post"),
-          children: <Widget>[
-            SimpleDialogOption(
-                child: Text("Photo with Camera"), onPressed: handleTakePhoto),
-            SimpleDialogOption(
-                child: Text("Image from Gallery"),
-                onPressed: handleChooseFromGallery),
-            SimpleDialogOption(
-              child: Text("Cancel"),
-              onPressed: () => Navigator.pop(context),
-            )
-          ],
-        );
+        return
+          SimpleDialog(
+            title: Text(isBan == true ? 'You are banned' : "Create Post"),
+            children: <Widget>[
+              SimpleDialogOption(
+                  child: Text(isBan == true ? 'You cannot post because you are banned by the owner' : "Photo with Camera"),
+                  onPressed: isBan == true ? null : handleTakePhoto),
+              SimpleDialogOption(
+                  child: Text(isBan == true ? '' :"Image from Gallery"),
+                  onPressed: isBan == true ? null : handleChooseFromGallery),
+              SimpleDialogOption(
+                child: Text("Cancel"),
+                onPressed: () => Navigator.pop(context),
+              )
+            ],
+          );
       },
     );
   }
@@ -130,7 +134,7 @@ class _UploadState extends State<Upload> with AutomaticKeepAliveClientMixin<Uplo
         .setData({
       "postId": postId,
       "ownerId": widget.currentUser.id,
-      "username": widget.currentUser.username,
+      "displayName": widget.currentUser.displayName,
       "mediaUrl": mediaUrl,
       "description": description,
       "location": location,
@@ -273,11 +277,27 @@ class _UploadState extends State<Upload> with AutomaticKeepAliveClientMixin<Uplo
     locationController.text = formattedAddress;
   }
 
-  bool get wantKeepAlive => true;
+  getIsBan() async{
+    await usersRef.document(currentUser.id).get().then((DocumentSnapshot doc){
+      User user = User.fromDocument(doc);
+      setState(() {
+        isBan = user.isBan;
+      });
+    });
+  }
+
+//  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getIsBan();
+  }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+//    super.build(context);
 
     return file == null ? buildSplashScreen() : buildUploadForm();
   }

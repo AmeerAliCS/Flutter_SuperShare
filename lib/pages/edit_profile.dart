@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:fluttershare5/models/user.dart';
 import 'package:fluttershare5/pages/Home.dart';
 import 'package:fluttershare5/widget/progress.dart';
@@ -157,8 +158,8 @@ class _EditProfileState extends State<EditProfile> {
                   padding: EdgeInsets.all(16.0),
                   child: Column(
                     children: <Widget>[
-                      buildDisplayNameField(),
-                      buildBioField()
+                  //    buildDisplayNameField(),
+                      buildBioField(),
                     ],
                   ),
                 ),
@@ -170,7 +171,13 @@ class _EditProfileState extends State<EditProfile> {
                     label: Text('Logout', style: TextStyle(color: Colors.red , fontSize: 22.0),),
                     icon: Icon(Icons.exit_to_app , color: Colors.red ,size: 22.0,),
                   ),
-                )
+                ),
+
+                Padding(
+                  padding: EdgeInsets.only(top: 20.0),
+                  child: SvgPicture.asset('assets/images/networking.svg' , height: 200.0,),
+                ),
+
               ],
             ),
           )

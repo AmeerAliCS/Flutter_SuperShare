@@ -32,6 +32,7 @@ class _ProfileState extends State<Profile> {
   int followingCount = 0;
   List<Post> posts = [];
   String displayName;
+  bool isBan;
 
 
   @override
@@ -50,9 +51,11 @@ class _ProfileState extends State<Profile> {
       User user = User.fromDocument(doc);
       setState(() {
         displayName = user.displayName;
+        isBan = user.isBan;
       });
     });
   }
+
 
   checkIfFollowing() async{
     DocumentSnapshot snapshot = await followersRef.document(widget.profileId)
@@ -108,6 +111,20 @@ class _ProfileState extends State<Profile> {
               padding: EdgeInsets.only(top: 20.0),
             ),
             Text('No Posts' , style: TextStyle(color: Theme.of(context).accentColor , fontSize: 40.0 , fontWeight: FontWeight.bold),)
+          ],
+        ),
+      );
+    }
+     if (isBan){
+      return Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            SvgPicture.asset('assets/images/no_content.svg' , height: 200.0,),
+            Padding(
+              padding: EdgeInsets.only(top: 20.0),
+            ),
+            Text('User Banned By Owner' , style: TextStyle(color: Theme.of(context).accentColor , fontSize: 25.0 , fontWeight: FontWeight.bold),)
           ],
         ),
       );
@@ -233,6 +250,7 @@ class _ProfileState extends State<Profile> {
     setState(() {
       isFollowing = true;
     });
+
     followersRef.document(widget.profileId)
         .collection('userFollowers').document(currentUserId).setData({});
 
@@ -244,7 +262,7 @@ class _ProfileState extends State<Profile> {
       "timestamp": timestamp,
       'ownerId' : widget.profileId ,
       "userId": currentUser.id,
-      "username": currentUser.username,
+      "displayName": currentUser.displayName,
       "userProfileImg": currentUser.photoUrl,
     });
   }
@@ -277,21 +295,21 @@ class _ProfileState extends State<Profile> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Container(
-                    child: Text('@${user.username != null ? user.username : user.id}' , style: TextStyle(fontSize: 16 , fontWeight: FontWeight.bold),),
+                    child: Text('@${user.displayName != null ? user.displayName : user.id}' , style: TextStyle(fontSize: 16 , fontWeight: FontWeight.bold),),
                   ),
 
                   Padding(
                     padding: EdgeInsets.only(left: 2.0),
                   ),
-//                  Container(
-//                    child: user.isVerified
-//                        ? Icon(
-//                            Icons.verified_user,
-//                            color: Colors.blue,
-//                            size: 18.0,
-//                          )
-//                        : Text(''),
-//                  )
+                  Container(
+                    child: user.isVerified
+                        ? Icon(
+                            Icons.verified_user,
+                            color: Colors.blue,
+                            size: 18.0,
+                          )
+                        : Text(''),
+                  )
                 ],
               ),
 
@@ -486,10 +504,9 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
 
     final bool isAuthUser = currentUser.id == widget.profileId;
-
     return Scaffold(
 
-      appBar: header(context , titleText: '${displayName != null ? displayName : ''}'
+      appBar: header(context , titleText: 'Profile'
         , elevation: 0.0 , opacity: 0.0  , backButton: isAuthUser ? false : true),
 
       body: ListView(
